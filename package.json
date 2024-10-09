@@ -1,5 +1,5 @@
 {
-  "name": "saigonsimple-server",
+  "name": "saigoncypher-server",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -20,6 +20,6 @@
     "mongoose": "^8.2.0",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.0",
-    "saigonsimple-server": "file:"
+    "saigoncypher-server": "file:"
   }
 }
