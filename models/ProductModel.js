@@ -31,6 +31,10 @@ const productScheme = mongoose.Schema(
       type: String,
       required: true,
     },
+    slug: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String,
       required: true,
@@ -49,12 +53,10 @@ const productScheme = mongoose.Schema(
     price: {
       type: Number,
       required: true,
-      default: 0,
     },
     thumbImage: {
       type: String,
       required: true,
-      default: 0,
     },
     images: [
       {

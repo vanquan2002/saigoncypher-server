@@ -5,27 +5,43 @@ import { admin, protect } from "./../MiddleWare/AuthMiddleware.js";
 
 const productRoute = express.Router();
 
+const createSlug = (name) => {
+  return name
+    .toLowerCase()
+    .normalize("NFD") // Chuyển đổi sang dạng không dấu
+    .replace(/[\u0300-\u036f]/g, "") // Xóa dấu
+    .replace(/\s+/g, "-") // Thay khoảng trắng bằng dấu gạch ngang
+    .replace(/[^\w-]+/g, "") // Xóa ký tự đặc biệt
+    .replace(/--+/g, "-") // Xóa dấu gạch ngang liên tiếp
+    .trim(); // Xóa khoảng trắng ở đầu và cuối
+};
+const removeDiacritics = (str) => {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+};
+
 productRoute.get(
   "/",
   asyncHandler(async (req, res) => {
     const pageSize = 8;
-    let page = Number(req.query.pageNumber) || 1;
+    let page = Math.max(Number(req.query.pageNumber) || 1, 1);
     const keyword = req.query.keyword
+      ? removeDiacritics(req.query.keyword.trim())
+      : "";
+    const searchQuery = keyword
       ? {
-          name: {
-            $regex: req.query.keyword,
-            $options: "i",
-          },
+          $and: keyword
+            .split(" ")
+            .filter(Boolean)
+            .map((word) => ({ slug: { $regex: word, $options: "i" } })),
         }
       : {};
-    const count = await Product.countDocuments({ ...keyword });
+    const count = await Product.countDocuments(searchQuery);
     const maxPage = Math.ceil(count / pageSize);
-    if (page < 1 || page > maxPage) {
-      page = 1;
-    }
-    const products = await Product.find({ ...keyword })
+    page = Math.min(page, maxPage);
+    const skip = Math.max(0, pageSize * (page - 1));
+    const products = await Product.find(searchQuery)
       .limit(pageSize)
-      .skip(pageSize * (page - 1))
+      .skip(skip)
       .sort({ _id: -1 });
     res.json({ products, page, pages: maxPage });
   })
@@ -49,7 +65,7 @@ productRoute.get(
       res.json(product);
     } else {
       res.status(404);
-      throw new Error("Product not found!");
+      throw new Error("Không tìm thấy mã sản phẩm này!");
     }
   })
 );
@@ -63,7 +79,7 @@ productRoute.get(
       res.json(relatedProducts);
     } else {
       res.status(404);
-      throw new Error("Related product not found!");
+      throw new Error("Không tìm thấy sản phẩm liên quan!");
     }
   })
 );
@@ -111,10 +127,25 @@ productRoute.delete(
     const product = await Product.findById(req.params.id);
     if (product) {
       await Product.deleteOne({ _id: req.params.id });
-      res.json({ message: "Product deleted" });
+      res.json({ message: "Xóa sản phẩm thành công!" });
     } else {
       res.status(404);
-      throw new Error("Product not found!");
+      throw new Error("Không tìm thấy mã sản phẩm này!");
+    }
+  })
+);
+
+productRoute.delete(
+  "/delete/all",
+  protect,
+  admin,
+  asyncHandler(async (req, res) => {
+    const products = await Product.deleteMany({});
+    if (products.deletedCount > 0) {
+      res.json({ message: "Tất cả sản phẩm đã được xóa!" });
+    } else {
+      res.status(404);
+      throw new Error("Không tìm thấy sản phẩm nào để xóa!");
     }
   })
 );
@@ -129,10 +160,11 @@ productRoute.post(
     const productExist = await Product.findOne({ name });
     if (productExist) {
       res.status(400);
-      throw new Error("Product name already exist!");
+      throw new Error("Tên sản phẩm đã tồn tại!");
     } else {
       const product = new Product({
         name,
+        slug: createSlug(name),
         description,
         price,
         thumbImage,
@@ -145,7 +177,7 @@ productRoute.post(
         res.status(201).json(createProduct);
       } else {
         res.status(400);
-        throw new Error("Invalid product data!");
+        throw new Error("Dữ liệu sản phẩm không hợp lệ!");
       }
     }
   })
