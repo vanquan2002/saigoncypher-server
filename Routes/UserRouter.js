@@ -17,7 +17,7 @@ userRoute.post(
         _id: user._id,
         name: user.name,
         avatar: user.avatar,
-        address: user.address,
+        deliveryInformation: user.deliveryInformation,
         email: user.email,
         isAdmin: user.isAdmin,
         token: generateToken(user._id),
@@ -50,7 +50,7 @@ userRoute.post(
         _id: user._id,
         name: user.name,
         avatar: user.avatar,
-        address: user.address,
+        deliveryInformation: user.deliveryInformation,
         email: user.email,
         isAdmin: user.isAdmin,
         token: generateToken(user._id),
@@ -72,7 +72,7 @@ userRoute.get(
         _id: user._id,
         name: user.name,
         avatar: user.avatar,
-        address: user.address,
+        deliveryInformation: user.deliveryInformation,
         email: user.email,
         isAdmin: user.isAdmin,
         createdAt: user.createdAt,
@@ -102,7 +102,20 @@ userRoute.put(
     if (user) {
       user.name = req.body.name || user.name;
       user.avatar = req.body.avatar || user.avatar;
-      user.address = req.body.address || user.address;
+
+      user.deliveryInformation.fullName =
+        req.body.fullName || user.deliveryInformation.fullName;
+      user.deliveryInformation.province =
+        req.body.province || user.deliveryInformation.province;
+      user.deliveryInformation.district =
+        req.body.district || user.deliveryInformation.district;
+      user.deliveryInformation.ward =
+        req.body.ward || user.deliveryInformation.ward;
+      user.deliveryInformation.address =
+        req.body.address || user.deliveryInformation.address;
+      user.deliveryInformation.phone =
+        req.body.phone || user.deliveryInformation.phone;
+
       user.email = req.body.email || user.email;
       if (req.body.password) {
         user.password = req.body.password;
@@ -112,7 +125,7 @@ userRoute.put(
         _id: updatedUser._id,
         name: updatedUser.name,
         avatar: updatedUser.avatar,
-        address: updatedUser.address,
+        deliveryInformation: updatedUser.deliveryInformation,
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
         createdAt: updatedUser.createdAt,

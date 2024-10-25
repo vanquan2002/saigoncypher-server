@@ -11,21 +11,30 @@ const userScheme = mongoose.Schema(
       type: String,
       default: null,
     },
-    address: {
+    deliveryInformation: {
+      fullName: {
+        type: String,
+        default: null,
+      },
       province: {
         type: String,
+        default: null,
       },
       district: {
         type: String,
+        default: null,
       },
       ward: {
         type: String,
+        default: null,
       },
       address: {
         type: String,
+        default: null,
       },
       phone: {
         type: String,
+        default: null,
       },
     },
     email: {
