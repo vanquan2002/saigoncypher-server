@@ -7,6 +7,27 @@ const userScheme = mongoose.Schema(
       type: String,
       required: true,
     },
+    avatar: {
+      type: String,
+      default: null,
+    },
+    address: {
+      province: {
+        type: String,
+      },
+      district: {
+        type: String,
+      },
+      ward: {
+        type: String,
+      },
+      address: {
+        type: String,
+      },
+      phone: {
+        type: String,
+      },
+    },
     email: {
       type: String,
       required: true,

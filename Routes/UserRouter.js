@@ -16,9 +16,10 @@ userRoute.post(
       res.json({
         _id: user._id,
         name: user.name,
+        avatar: user.avatar,
+        address: user.address,
         email: user.email,
         isAdmin: user.isAdmin,
-        favorites: user.favorites,
         token: generateToken(user._id),
         createdAt: user.createdAt,
       });
@@ -48,54 +49,16 @@ userRoute.post(
       res.status(201).json({
         _id: user._id,
         name: user.name,
+        avatar: user.avatar,
+        address: user.address,
         email: user.email,
         isAdmin: user.isAdmin,
-        favorites: user.favorites,
         token: generateToken(user._id),
       });
     } else {
       res.status(400);
       throw new Error("Invalid User Data");
     }
-  })
-);
-
-userRoute.post(
-  "/:id/favorites",
-  protect,
-  asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
-    if (!user) {
-      res.status(404);
-      throw new Error("User not found");
-    }
-
-    const favoriteIndex = user.favorites.findIndex(
-      (f) => f.product.toString() === req.params.id.toString()
-    );
-
-    if (favoriteIndex !== -1) {
-      user.favorites.splice(favoriteIndex, 1);
-    } else {
-      user.favorites.push({
-        image: req.body.image,
-        name: req.body.name,
-        price: req.body.price,
-        product: req.params.id,
-      });
-    }
-    const updatedUser = await user.save();
-    const responseData = {
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      isAdmin: updatedUser.isAdmin,
-      favorites: updatedUser.favorites,
-      createdAt: updatedUser.createdAt,
-      token: generateToken(updatedUser._id),
-      successAddFavorites: favoriteIndex === -1 ? true : false,
-    };
-    res.json(responseData);
   })
 );
 
@@ -108,6 +71,8 @@ userRoute.get(
       res.json({
         _id: user._id,
         name: user.name,
+        avatar: user.avatar,
+        address: user.address,
         email: user.email,
         isAdmin: user.isAdmin,
         createdAt: user.createdAt,
@@ -136,6 +101,8 @@ userRoute.put(
     const user = await User.findById(req.user._id);
     if (user) {
       user.name = req.body.name || user.name;
+      user.avatar = req.body.avatar || user.avatar;
+      user.address = req.body.address || user.address;
       user.email = req.body.email || user.email;
       if (req.body.password) {
         user.password = req.body.password;
@@ -144,9 +111,10 @@ userRoute.put(
       res.json({
         _id: updatedUser._id,
         name: updatedUser.name,
+        avatar: updatedUser.avatar,
+        address: updatedUser.address,
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
-        favorites: updatedUser.favorites,
         createdAt: updatedUser.createdAt,
         token: generateToken(updatedUser._id),
       });
