@@ -13,16 +13,24 @@ const orderScheme = mongoose.Schema(
           type: String,
           required: true,
         },
+        color: {
+          type: String,
+          required: true,
+        },
+        size: {
+          type: String,
+          required: true,
+        },
         qty: {
           type: Number,
           required: true,
         },
-        image: {
-          type: String,
-          required: true,
-        },
         price: {
           type: Number,
+          required: true,
+        },
+        thumbImage: {
+          type: String,
           required: true,
         },
         product: {
@@ -32,70 +40,50 @@ const orderScheme = mongoose.Schema(
         },
       },
     ],
-    shippingAddress: {
+    deliveryInformation: {
+      fullName: {
+        type: String,
+        default: null,
+      },
+      province: {
+        type: String,
+        default: null,
+      },
+      district: {
+        type: String,
+        default: null,
+      },
+      ward: {
+        type: String,
+        default: null,
+      },
       address: {
         type: String,
-        required: true,
+        default: null,
       },
-      city: {
+      phone: {
         type: String,
-        required: true,
-      },
-      postalCode: {
-        type: String,
-        required: true,
-      },
-      country: {
-        type: String,
-        required: true,
+        default: null,
       },
     },
     paymentMethod: {
       type: String,
-      required: true,
-      default: "Paypal",
-    },
-    paymentResult: {
-      id: {
-        type: String,
-      },
-      status: {
-        type: String,
-      },
-      update_time: {
-        type: String,
-      },
-      email_address: {
-        type: String,
-      },
-    },
-    taxPrice: {
-      type: Number,
-      required: true,
-      default: "0.0",
+      default: "COD",
     },
     itemsPrice: {
       type: Number,
       required: true,
-      default: "0.0",
+      default: 0,
     },
     shippingPrice: {
       type: Number,
       required: true,
-      default: "0.0",
+      default: 0,
     },
     totalPrice: {
       type: Number,
       required: true,
-      default: "0.0",
-    },
-    isPaid: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    paidAt: {
-      type: Date,
+      default: 0,
     },
     isDelivered: {
       type: Boolean,

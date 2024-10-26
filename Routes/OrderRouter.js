@@ -11,10 +11,8 @@ orderRoute.post(
   asyncHandler(async (req, res) => {
     const {
       orderItems,
-      shippingAddress,
-      paymentMethod,
+      deliveryInformation,
       itemsPrice,
-      taxPrice,
       shippingPrice,
       totalPrice,
     } = req.body;
@@ -23,12 +21,10 @@ orderRoute.post(
       throw new Error("No order items");
     } else {
       const order = new Order({
-        orderItems,
         user: req.user._id,
-        shippingAddress,
-        paymentMethod,
+        orderItems,
+        deliveryInformation,
         itemsPrice,
-        taxPrice,
         shippingPrice,
         totalPrice,
       });
