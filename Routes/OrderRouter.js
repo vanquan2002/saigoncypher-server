@@ -27,6 +27,10 @@ orderRoute.post(
         itemsPrice,
         shippingPrice,
         totalPrice,
+        orderStatus: {
+          isPrepared: true,
+          preparedAt: Date.now(),
+        },
       });
       const createOrder = await order.save();
       res.status(201).json(createOrder);
@@ -49,7 +53,7 @@ orderRoute.get(
 );
 
 orderRoute.get(
-  "/:id",
+  "/:id/details",
   protect,
   asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id).populate(
@@ -73,6 +77,30 @@ orderRoute.get(
       _id: -1,
     });
     res.json(order);
+  })
+);
+
+orderRoute.put(
+  "/:id/cancel",
+  protect,
+  asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      if (!order.orderStatus.isDelivered) {
+        order.orderStatus.isCancelled = true;
+        order.orderStatus.cancelledAt = Date.now();
+        const updatedOrder = await order.save();
+        res.json(updatedOrder);
+      } else {
+        res.status(404);
+        throw new Error(
+          "The order is in transit, you cannot cancel this order!"
+        );
+      }
+    } else {
+      res.status(404);
+      throw new Error("Order Not Found");
+    }
   })
 );
 

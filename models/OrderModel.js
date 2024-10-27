@@ -43,27 +43,27 @@ const orderScheme = mongoose.Schema(
     deliveryInformation: {
       fullName: {
         type: String,
-        default: null,
+        required: true,
       },
       province: {
         type: String,
-        default: null,
+        required: true,
       },
       district: {
         type: String,
-        default: null,
+        required: true,
       },
       ward: {
         type: String,
-        default: null,
+        required: true,
       },
       address: {
         type: String,
-        default: null,
+        required: true,
       },
       phone: {
         type: String,
-        default: null,
+        required: true,
       },
     },
     paymentMethod: {
@@ -85,13 +85,43 @@ const orderScheme = mongoose.Schema(
       required: true,
       default: 0,
     },
-    isDelivered: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-    deliveredAt: {
-      type: Date,
+    orderStatus: {
+      isPrepared: {
+        type: Boolean,
+        required: true,
+        default: true,
+      },
+      preparedAt: {
+        type: Date,
+      },
+      isDelivered: {
+        type: Boolean,
+        default: false,
+      },
+      deliveredAt: {
+        type: Date,
+      },
+      isReceived: {
+        type: Boolean,
+        default: false,
+      },
+      receivedAt: {
+        type: Date,
+      },
+      isPaid: {
+        type: Boolean,
+        default: false,
+      },
+      paidAt: {
+        type: Date,
+      },
+      isCancelled: {
+        type: Boolean,
+        default: false,
+      },
+      cancelledAt: {
+        type: Date,
+      },
     },
   },
   {
