@@ -128,8 +128,8 @@ userRoute.put(
         deliveryInformation: updatedUser.deliveryInformation,
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
-        createdAt: updatedUser.createdAt,
         token: generateToken(updatedUser._id),
+        createdAt: updatedUser.createdAt,
       });
     } else {
       res.status(404);
