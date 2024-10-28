@@ -15,6 +15,7 @@ orderRoute.post(
       itemsPrice,
       shippingPrice,
       totalPrice,
+      note,
     } = req.body;
     if (orderItems && orderItems.length === 0) {
       res.status(400);
@@ -27,6 +28,7 @@ orderRoute.post(
         itemsPrice,
         shippingPrice,
         totalPrice,
+        note,
         orderStatus: {
           isPrepared: true,
           preparedAt: Date.now(),

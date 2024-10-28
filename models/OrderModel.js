@@ -123,6 +123,9 @@ const orderScheme = mongoose.Schema(
         type: Date,
       },
     },
+    note: {
+      type: String,
+    },
   },
   {
     timestamps: true,
