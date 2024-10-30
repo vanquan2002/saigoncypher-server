@@ -83,6 +83,65 @@ orderRoute.get(
 );
 
 orderRoute.put(
+  "/:id/deliver",
+  protect,
+  admin,
+  asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      if (!order.orderStatus.isCancelled) {
+        order.orderStatus.isDelivered = true;
+        order.orderStatus.deliveredAt = Date.now();
+        const updatedOrder = await order.save();
+        res.json(updatedOrder);
+      } else {
+        res.status(404);
+        throw new Error("Đơn hàng đã bị hủy, không thể giao!");
+      }
+    } else {
+      res.status(404);
+      throw new Error("Order Not Found");
+    }
+  })
+);
+
+orderRoute.put(
+  "/:id/receive",
+  protect,
+  admin,
+  asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      order.orderStatus.isReceived = true;
+      order.orderStatus.receivedAt = Date.now();
+      const updatedOrder = await order.save();
+      res.json(updatedOrder);
+    } else {
+      res.status(404);
+      throw new Error("Order Not Found");
+    }
+  })
+);
+
+orderRoute.put(
+  "/:id/pay",
+  protect,
+  admin,
+  asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      order.orderStatus.isPaid = true;
+      order.orderStatus.paidAt = Date.now();
+      const updatedOrder = await order.save();
+      res.json(updatedOrder);
+    } else {
+      res.status(404);
+      throw new Error("Order Not Found");
+    }
+  })
+);
+
+orderRoute.put(
   "/:id/cancel",
   protect,
   asyncHandler(async (req, res) => {
@@ -95,51 +154,8 @@ orderRoute.put(
         res.json(updatedOrder);
       } else {
         res.status(404);
-        throw new Error(
-          "The order is in transit, you cannot cancel this order!"
-        );
+        throw new Error("Đơn hàng đang được vận chuyển, không thể hủy!");
       }
-    } else {
-      res.status(404);
-      throw new Error("Order Not Found");
-    }
-  })
-);
-
-orderRoute.put(
-  "/:id/pay",
-  protect,
-  asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
-    if (order) {
-      order.isPaid = true;
-      order.paidAt = Date.now();
-      order.paymentResult = {
-        id: req.body.id,
-        status: req.body.status,
-        update_time: req.body.update_time,
-        email_address: req.body.email_address,
-      };
-      const updatedOrder = await order.save();
-      res.json(updatedOrder);
-    } else {
-      res.status(404);
-      throw new Error("Order Not Found");
-    }
-  })
-);
-
-orderRoute.put(
-  "/:id/delivered",
-  protect,
-  admin,
-  asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
-    if (order) {
-      order.isDelivered = true;
-      order.deliveredAt = Date.now();
-      const updatedOrder = await order.save();
-      res.json(updatedOrder);
     } else {
       res.status(404);
       throw new Error("Order Not Found");
