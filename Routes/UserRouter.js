@@ -25,7 +25,7 @@ userRoute.post(
       });
     } else {
       res.status(401);
-      throw new Error("Invalid Email or Password");
+      throw new Error("Email hoặc mật khẩu không đúng!");
     }
   })
 );
@@ -38,7 +38,7 @@ userRoute.post(
     const userExists = await User.findOne({ email });
     if (userExists) {
       res.status(400);
-      throw new Error("User already exists");
+      throw new Error("Email đã tồn tại!");
     }
     const user = await User.create({
       name,

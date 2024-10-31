@@ -19,7 +19,7 @@ orderRoute.post(
     } = req.body;
     if (orderItems && orderItems.length === 0) {
       res.status(400);
-      throw new Error("No order items");
+      throw new Error("Không có sản phẩm nào để đặt!");
     } else {
       const order = new Order({
         user: req.user._id,
