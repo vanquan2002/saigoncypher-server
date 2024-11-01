@@ -57,7 +57,7 @@ userRoute.post(
       });
     } else {
       res.status(400);
-      throw new Error("Invalid User Data");
+      throw new Error("Dữ liệu người dùng không hợp lệ!");
     }
   })
 );
@@ -79,7 +79,7 @@ userRoute.get(
       });
     } else {
       res.status(404);
-      throw new Error("User not found");
+      throw new Error("Không tìm thấy người dùng!");
     }
   })
 );
@@ -102,6 +102,7 @@ userRoute.put(
     if (user) {
       user.name = req.body.name || user.name;
       user.avatar = req.body.avatar || user.avatar;
+      user.email = req.body.email || user.email;
 
       user.deliveryInformation.fullName =
         req.body.fullName || user.deliveryInformation.fullName;
@@ -116,7 +117,6 @@ userRoute.put(
       user.deliveryInformation.phone =
         req.body.phone || user.deliveryInformation.phone;
 
-      user.email = req.body.email || user.email;
       if (req.body.password) {
         user.password = req.body.password;
       }
@@ -133,7 +133,7 @@ userRoute.put(
       });
     } else {
       res.status(404);
-      throw new Error("User not found");
+      throw new Error("Không tìm thấy người dùng!");
     }
   })
 );
