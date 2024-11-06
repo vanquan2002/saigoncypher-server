@@ -38,6 +38,11 @@ const orderScheme = mongoose.Schema(
           required: true,
           ref: "Product",
         },
+        isReview: {
+          type: Boolean,
+          required: true,
+          default: false,
+        },
       },
     ],
     deliveryInformation: {

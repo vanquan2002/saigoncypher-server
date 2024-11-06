@@ -8,12 +8,12 @@ const productRoute = express.Router();
 const createSlug = (name) => {
   return name
     .toLowerCase()
-    .normalize("NFD") // Chuyển đổi sang dạng không dấu
-    .replace(/[\u0300-\u036f]/g, "") // Xóa dấu
-    .replace(/\s+/g, "-") // Thay khoảng trắng bằng dấu gạch ngang
-    .replace(/[^\w-]+/g, "") // Xóa ký tự đặc biệt
-    .replace(/--+/g, "-") // Xóa dấu gạch ngang liên tiếp
-    .trim(); // Xóa khoảng trắng ở đầu và cuối
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "")
+    .replace(/--+/g, "-")
+    .trim();
 };
 const removeDiacritics = (str) => {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -96,7 +96,7 @@ productRoute.post(
       );
       if (alreadyReviewed) {
         res.status(400);
-        throw new Error("Product already reviewed!");
+        throw new Error("Bạn đã đánh giá sản phẩm này!");
       }
       const review = {
         name: req.user.name,
@@ -111,10 +111,10 @@ productRoute.post(
         product.reviews.length
       ).toFixed(1);
       await product.save();
-      res.status(201).json({ message: "Reviewed added" });
+      res.status(201).json({ message: "Đánh giá thành công!" });
     } else {
       res.status(404);
-      throw new Error("Product not found!");
+      throw new Error("Không tìm thấy mã sản phẩm!");
     }
   })
 );

@@ -163,4 +163,33 @@ orderRoute.put(
   })
 );
 
+orderRoute.put(
+  "/:id/review",
+  protect,
+  asyncHandler(async (req, res) => {
+    const { id } = req.body;
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      const items = order.orderItems.filter(
+        (item) => item.product.toString() === id
+      );
+      if (items.length > 0) {
+        items.forEach((item) => {
+          item.isReview = true;
+        });
+        await order.save();
+        res.json({ message: "Cập nhật đánh giá đơn hàng thành công!" });
+      } else {
+        res.status(404);
+        throw new Error(
+          "Không tìm thấy mã sản phẩm nào được chỉ định trong đơn hàng để cập nhật!"
+        );
+      }
+    } else {
+      res.status(404);
+      throw new Error("Không tìm thấy mã đơn hàng!");
+    }
+  })
+);
+
 export default orderRoute;
