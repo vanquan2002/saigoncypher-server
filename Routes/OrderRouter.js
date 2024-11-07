@@ -58,15 +58,30 @@ orderRoute.get(
   "/:id/details",
   protect,
   asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id).populate(
-      "user",
-      "name email"
-    );
+    const order = await Order.findById(req.params.id).populate([
+      { path: "user", select: "name email" },
+      { path: "orderItems.product", model: "Product", select: "reviews" },
+    ]);
     if (order) {
-      res.json(order);
+      if (order.user._id.toString() === req.user._id.toString()) {
+        order.orderItems = order.orderItems.map((item) => {
+          if (item.product) {
+            item.isReview = item.product.reviews?.some(
+              (review) => review.user.toString() === req.user._id.toString()
+            );
+            item.product = item.product._id;
+          }
+          return item;
+        });
+
+        res.json(order);
+      } else {
+        res.status(403);
+        throw new Error("Bạn không có quyền truy cập đơn hàng này!");
+      }
     } else {
       res.status(404);
-      throw new Error("Order Not Found");
+      throw new Error("Không tìm thấy mã đơn hàng này!");
     }
   })
 );
@@ -159,35 +174,6 @@ orderRoute.put(
     } else {
       res.status(404);
       throw new Error("Order Not Found");
-    }
-  })
-);
-
-orderRoute.put(
-  "/:id/review",
-  protect,
-  asyncHandler(async (req, res) => {
-    const { id } = req.body;
-    const order = await Order.findById(req.params.id);
-    if (order) {
-      const items = order.orderItems.filter(
-        (item) => item.product.toString() === id
-      );
-      if (items.length > 0) {
-        items.forEach((item) => {
-          item.isReview = true;
-        });
-        await order.save();
-        res.json({ message: "Cập nhật đánh giá đơn hàng thành công!" });
-      } else {
-        res.status(404);
-        throw new Error(
-          "Không tìm thấy mã sản phẩm nào được chỉ định trong đơn hàng để cập nhật!"
-        );
-      }
-    } else {
-      res.status(404);
-      throw new Error("Không tìm thấy mã đơn hàng!");
     }
   })
 );

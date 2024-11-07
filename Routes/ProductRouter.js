@@ -91,13 +91,6 @@ productRoute.post(
     const { rating, comment } = req.body;
     const product = await Product.findById(req.params.id);
     if (product) {
-      const alreadyReviewed = product.reviews.find(
-        (r) => r.user.toString() === req.user._id.toString()
-      );
-      if (alreadyReviewed) {
-        res.status(400);
-        throw new Error("Bạn đã đánh giá sản phẩm này!");
-      }
       const review = {
         name: req.user.name,
         rating: Number(rating),
