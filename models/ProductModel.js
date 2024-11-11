@@ -39,6 +39,14 @@ const productScheme = mongoose.Schema(
       type: String,
       required: true,
     },
+    returnPolicy: {
+      type: String,
+      required: true,
+    },
+    storageInstructions: {
+      type: String,
+      required: true,
+    },
     reviews: [reviewSchema],
     rating: {
       type: Number,
@@ -86,6 +94,16 @@ const productScheme = mongoose.Schema(
     color: {
       type: String,
       required: true,
+    },
+    model: {
+      size: {
+        type: String,
+        required: true,
+      },
+      height: {
+        type: String,
+        required: true,
+      },
     },
   },
   {

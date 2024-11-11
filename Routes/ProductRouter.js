@@ -148,8 +148,18 @@ productRoute.post(
   protect,
   admin,
   asyncHandler(async (req, res) => {
-    const { name, description, price, thumbImage, images, sizes, color } =
-      req.body;
+    const {
+      name,
+      description,
+      returnPolicy,
+      storageInstructions,
+      price,
+      thumbImage,
+      images,
+      sizes,
+      color,
+      model,
+    } = req.body;
     const productExist = await Product.findOne({ name });
     if (productExist) {
       res.status(400);
@@ -159,11 +169,14 @@ productRoute.post(
         name,
         slug: createSlug(name),
         description,
+        returnPolicy,
+        storageInstructions,
         price,
         thumbImage,
         images,
         sizes,
         color,
+        model,
       });
       if (product) {
         const createProduct = await product.save();
