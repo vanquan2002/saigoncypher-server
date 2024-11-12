@@ -13,6 +13,10 @@ const orderScheme = mongoose.Schema(
           type: String,
           required: true,
         },
+        slug: {
+          type: String,
+          required: true,
+        },
         color: {
           type: String,
           required: true,

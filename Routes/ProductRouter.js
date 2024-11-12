@@ -58,9 +58,11 @@ productRoute.get(
 );
 
 productRoute.get(
-  "/:id",
+  "/:slug/detail",
   asyncHandler(async (req, res) => {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findOne({ slug: req.params.slug }).populate([
+      { path: "reviews.user", model: "User", select: "name" },
+    ]);
     if (product) {
       res.json(product);
     } else {
@@ -92,7 +94,6 @@ productRoute.post(
     const product = await Product.findById(req.params.id);
     if (product) {
       const review = {
-        name: req.user.name,
         rating: Number(rating),
         comment,
         user: req.user._id,

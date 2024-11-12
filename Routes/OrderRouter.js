@@ -28,11 +28,11 @@ orderRoute.post(
         itemsPrice,
         shippingPrice,
         totalPrice,
-        note,
         orderStatus: {
           isPrepared: true,
           preparedAt: Date.now(),
         },
+        note,
       });
       const createOrder = await order.save();
       res.status(201).json(createOrder);
