@@ -40,6 +40,7 @@ productRoute.get(
     page = Math.min(page, maxPage);
     const skip = Math.max(0, pageSize * (page - 1));
     const products = await Product.find(searchQuery)
+      .select("name slug price thumbImage")
       .limit(pageSize)
       .skip(skip)
       .sort({ _id: -1 });
@@ -61,7 +62,7 @@ productRoute.get(
   "/:slug/detail",
   asyncHandler(async (req, res) => {
     const product = await Product.findOne({ slug: req.params.slug }).populate([
-      { path: "reviews.user", model: "User", select: "name" },
+      { path: "reviews.user", model: "User", select: "name avatar" },
     ]);
     if (product) {
       res.json(product);
@@ -77,7 +78,9 @@ productRoute.get(
   asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (product) {
-      const relatedProducts = await Product.find({ _id: { $ne: product } });
+      const relatedProducts = await Product.find({
+        _id: { $ne: product },
+      }).select("name slug price thumbImage");
       res.json(relatedProducts);
     } else {
       res.status(404);
