@@ -139,24 +139,6 @@ orderRoute.put(
 );
 
 orderRoute.put(
-  "/:id/pay",
-  protect,
-  admin,
-  asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
-    if (order) {
-      order.orderStatus.isPaid = true;
-      order.orderStatus.paidAt = Date.now();
-      const updatedOrder = await order.save();
-      res.json(updatedOrder);
-    } else {
-      res.status(404);
-      throw new Error("Order Not Found");
-    }
-  })
-);
-
-orderRoute.put(
   "/:id/cancel",
   protect,
   asyncHandler(async (req, res) => {
