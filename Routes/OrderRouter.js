@@ -41,6 +41,17 @@ orderRoute.post(
 );
 
 orderRoute.get(
+  "/",
+  protect,
+  asyncHandler(async (req, res) => {
+    const order = await Order.find({ user: req.user._id }).sort({
+      _id: -1,
+    });
+    res.json(order);
+  })
+);
+
+orderRoute.get(
   "/all",
   protect,
   admin,
@@ -73,7 +84,6 @@ orderRoute.get(
           }
           return item;
         });
-
         res.json(order);
       } else {
         res.status(403);
@@ -83,17 +93,6 @@ orderRoute.get(
       res.status(404);
       throw new Error("Không tìm thấy mã đơn hàng này!");
     }
-  })
-);
-
-orderRoute.get(
-  "/",
-  protect,
-  asyncHandler(async (req, res) => {
-    const order = await Order.find({ user: req.user._id }).sort({
-      _id: -1,
-    });
-    res.json(order);
   })
 );
 
