@@ -52,7 +52,7 @@ orderRoute.get(
 );
 
 orderRoute.get(
-  "/all",
+  "/admin",
   protect,
   admin,
   asyncHandler(async (req, res) => {
@@ -96,8 +96,40 @@ orderRoute.get(
   })
 );
 
+orderRoute.get(
+  "/:id/admin",
+  admin,
+  protect,
+  asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id).populate([
+      { path: "user", select: "name email" },
+      { path: "orderItems.product", model: "Product", select: "reviews" },
+    ]);
+    if (order) {
+      if (order.user._id.toString() === req.user._id.toString()) {
+        order.orderItems = order.orderItems.map((item) => {
+          if (item.product) {
+            item.isReview = item.product.reviews?.some(
+              (review) => review.user.toString() === req.user._id.toString()
+            );
+            item.product = item.product._id;
+          }
+          return item;
+        });
+        res.json(order);
+      } else {
+        res.status(403);
+        throw new Error("Bạn không có quyền truy cập đơn hàng này!");
+      }
+    } else {
+      res.status(404);
+      throw new Error("Không tìm thấy mã đơn hàng này!");
+    }
+  })
+);
+
 orderRoute.put(
-  "/:id/deliver",
+  "/:id/deliver/admin",
   protect,
   admin,
   asyncHandler(async (req, res) => {
@@ -120,7 +152,7 @@ orderRoute.put(
 );
 
 orderRoute.put(
-  "/:id/receive",
+  "/:id/receive/admin",
   protect,
   admin,
   asyncHandler(async (req, res) => {
@@ -138,7 +170,7 @@ orderRoute.put(
 );
 
 orderRoute.put(
-  "/:id/cancel",
+  "/:id/cancel/admin",
   protect,
   asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);

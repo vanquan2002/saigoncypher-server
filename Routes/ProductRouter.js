@@ -49,7 +49,7 @@ productRoute.get(
 );
 
 productRoute.get(
-  "/all",
+  "/admin",
   protect,
   admin,
   asyncHandler(async (req, res) => {
@@ -64,6 +64,21 @@ productRoute.get(
     const product = await Product.findOne({ slug: req.params.slug }).populate([
       { path: "reviews.user", model: "User", select: "name avatar" },
     ]);
+    if (product) {
+      res.json(product);
+    } else {
+      res.status(404);
+      throw new Error("Không tìm thấy mã sản phẩm này!");
+    }
+  })
+);
+
+productRoute.get(
+  "/:id/admin",
+  protect,
+  admin,
+  asyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id);
     if (product) {
       res.json(product);
     } else {
@@ -117,7 +132,7 @@ productRoute.post(
 );
 
 productRoute.delete(
-  "/:id",
+  "/:id/admin",
   protect,
   admin,
   asyncHandler(async (req, res) => {
@@ -133,7 +148,7 @@ productRoute.delete(
 );
 
 productRoute.delete(
-  "/delete/all",
+  "/all/admin",
   protect,
   admin,
   asyncHandler(async (req, res) => {
@@ -148,7 +163,7 @@ productRoute.delete(
 );
 
 productRoute.post(
-  "/",
+  "/admin",
   protect,
   admin,
   asyncHandler(async (req, res) => {
@@ -194,7 +209,7 @@ productRoute.post(
 );
 
 productRoute.put(
-  "/:id",
+  "/:id/admin",
   protect,
   admin,
   asyncHandler(async (req, res) => {

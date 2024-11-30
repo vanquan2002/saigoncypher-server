@@ -84,16 +84,6 @@ userRoute.get(
   })
 );
 
-userRoute.get(
-  "/",
-  protect,
-  admin,
-  asyncHandler(async (req, res) => {
-    const users = await User.find({});
-    res.json(users);
-  })
-);
-
 userRoute.put(
   "/profile",
   protect,
@@ -135,6 +125,16 @@ userRoute.put(
       res.status(404);
       throw new Error("Không tìm thấy người dùng!");
     }
+  })
+);
+
+userRoute.get(
+  "/admin",
+  protect,
+  admin,
+  asyncHandler(async (req, res) => {
+    const users = await User.find({});
+    res.json(users);
   })
 );
 
