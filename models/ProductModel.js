@@ -62,31 +62,48 @@ const productScheme = mongoose.Schema(
       type: String,
       required: true,
     },
-    images: [
-      {
-        image: {
-          type: String,
-          required: true,
+    images: {
+      type: [
+        {
+          image: {
+            type: String,
+            required: [true, "Đường dẫn ảnh là bắt buộc."],
+          },
+          description: {
+            type: String,
+            required: [true, "Mô tả ngắn là bắt buộc."],
+          },
         },
-        description: {
-          type: String,
-          required: true,
+      ],
+      validate: {
+        validator: function (value) {
+          return value.length > 0;
         },
+        message: "Phải có ít nhất một ảnh sản phẩm.",
       },
-    ],
-    sizes: [
-      {
-        size: {
-          type: String,
-          required: true,
+    },
+
+    sizes: {
+      type: [
+        {
+          size: {
+            type: String,
+            required: [true, "Cỡ là bắt buộc."],
+          },
+          countInStock: {
+            type: Number,
+            required: [true, "Số lượng là bắt buộc."],
+          },
         },
-        countInStock: {
-          type: Number,
-          required: true,
-          default: 0,
+      ],
+      validate: {
+        validator: function (value) {
+          return value.length > 0;
         },
+        message: "Phải có ít nhất một cỡ.",
       },
-    ],
+    },
+
     color: {
       type: String,
       required: true,

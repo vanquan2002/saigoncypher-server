@@ -213,19 +213,41 @@ productRoute.put(
   protect,
   admin,
   asyncHandler(async (req, res) => {
-    const { name, price, description, image, countInStock } = req.body;
+    const {
+      name,
+      description,
+      returnPolicy,
+      storageInstructions,
+      price,
+      thumbImage,
+      images,
+      sizes,
+      color,
+      model,
+    } = req.body;
     const product = await Product.findById(req.params.id);
     if (product) {
       product.name = name || product.name;
       product.description = description || product.description;
-      product.image = image || product.image;
+      product.returnPolicy = returnPolicy || product.returnPolicy;
+      product.storageInstructions =
+        storageInstructions || product.storageInstructions;
       product.price = price || product.price;
-      product.countInStock = countInStock || product.countInStock;
+      product.thumbImage = thumbImage || product.thumbImage;
+      product.images = images || product.images;
+      product.sizes = sizes || product.sizes;
+      product.color = color || product.color;
+      product.model = {
+        ...product.model,
+        ...(model.size && { size: model.size }),
+        ...(model.height && { height: model.height }),
+      };
+
       const updateProduct = await product.save();
       res.json(updateProduct);
     } else {
       res.status(404);
-      throw new Error("Product not found!");
+      throw new Error("Không tìm thấy mã sản phẩm này!");
     }
   })
 );
