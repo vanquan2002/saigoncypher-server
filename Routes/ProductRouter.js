@@ -197,13 +197,8 @@ productRoute.post(
         color,
         model,
       });
-      if (product) {
-        const createProduct = await product.save();
-        res.status(201).json(createProduct);
-      } else {
-        res.status(400);
-        throw new Error("Dữ liệu sản phẩm không hợp lệ!");
-      }
+      await product.save();
+      res.status(201).json({ message: "Thêm sản phẩm thành công!" });
     }
   })
 );
